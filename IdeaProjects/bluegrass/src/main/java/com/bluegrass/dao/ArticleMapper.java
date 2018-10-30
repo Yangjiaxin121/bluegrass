@@ -1,24 +1,20 @@
 package com.bluegrass.dao;
 
 import com.bluegrass.pojo.Article;
-import org.apache.ibatis.annotations.Param;
-
-import java.util.List;
+import com.bluegrass.pojo.ArticleWithBLOBs;
 
 public interface ArticleMapper {
     int deleteByPrimaryKey(Integer id);
 
-    int insert(Article record);
+    int insert(ArticleWithBLOBs record);
 
-    int insertSelective(Article record);
+    int insertSelective(ArticleWithBLOBs record);
 
-    Article selectByPrimaryKey(Integer id);
+    ArticleWithBLOBs selectByPrimaryKey(Integer id);
 
-    int updateByPrimaryKeySelective(Article record);
+    int updateByPrimaryKeySelective(ArticleWithBLOBs record);
+
+    int updateByPrimaryKeyWithBLOBs(ArticleWithBLOBs record);
 
     int updateByPrimaryKey(Article record);
-
-    List<Article> searchByUserId(@Param("userId") Integer userId);
-
-    List<Article> searchByArticleTitle(String articleTitle);
 }

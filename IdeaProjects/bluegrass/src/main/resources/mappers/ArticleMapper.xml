@@ -1,35 +1,423 @@
-<?xml version="1.0" encoding="UTF-8" ?>
-<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
-<mapper namespace="com.bluegrass.dao.ArticleMapper" >
-  <resultMap id="BaseResultMap" type="com.bluegrass.pojo.Article" >
-    <constructor >
-      <idArg column="id" jdbcType="INTEGER" javaType="java.lang.Integer" />
-      <arg column="user_id" jdbcType="INTEGER" javaType="java.lang.Integer" />
-      <arg column="article_title" jdbcType="VARCHAR" javaType="java.lang.String" />
-      <arg column="article_viewcount" jdbcType="INTEGER" javaType="java.lang.Integer" />
-      <arg column="subtitle" jdbcType="VARCHAR" javaType="java.lang.String" />
-      <arg column="main_image" jdbcType="VARCHAR" javaType="java.lang.String" />
-      <arg column="sub_images" jdbcType="VARCHAR" javaType="java.lang.String" />
-      <arg column="detail" jdbcType="VARCHAR" javaType="java.lang.String" />
-      <arg column="create_time" jdbcType="TIMESTAMP" javaType="java.util.Date" />
-      <arg column="update_time" jdbcType="TIMESTAMP" javaType="java.util.Date" />
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bluegrass.dao.ArticleMapper">
+  <resultMap id="BaseResultMap" type="com.bluegrass.pojo.Article">
+    <constructor>
+      <idArg column="id" javaType="java.lang.Integer" jdbcType="INTEGER" />
+      <arg column="user_id" javaType="java.lang.Integer" jdbcType="INTEGER" />
+      <arg column="article_title" javaType="java.lang.String" jdbcType="VARCHAR" />
+      <arg column="article_subtitle" javaType="java.lang.String" jdbcType="VARCHAR" />
+      <arg column="article_main_image" javaType="java.lang.String" jdbcType="VARCHAR" />
+      <arg column="article_praise" javaType="java.lang.Integer" jdbcType="INTEGER" />
+      <arg column="article_viewcount" javaType="java.lang.Integer" jdbcType="INTEGER" />
+      <arg column="article_create_time" javaType="java.util.Date" jdbcType="TIMESTAMP" />
+      <arg column="article_update_time" javaType="java.util.Date" jdbcType="TIMESTAMP" />
     </constructor>
   </resultMap>
-  <sql id="Base_Column_List" >
+  <resultMap id="ResultMapWithBLOBs" type="com.bluegrass.pojo.ArticleWithBLOBs">
+    <constructor>
+      <idArg column="id" javaType="java.lang.Integer" jdbcType="INTEGER" />
+      <arg column="user_id" javaType="java.lang.Integer" jdbcType="INTEGER" />
+      <arg column="article_title" javaType="java.lang.String" jdbcType="VARCHAR" />
+      <arg column="article_subtitle" javaType="java.lang.String" jdbcType="VARCHAR" />
+      <arg column="article_main_image" javaType="java.lang.String" jdbcType="VARCHAR" />
+      <arg column="article_praise" javaType="java.lang.Integer" jdbcType="INTEGER" />
+      <arg column="article_viewcount" javaType="java.lang.Integer" jdbcType="INTEGER" />
+      <arg column="article_create_time" javaType="java.util.Date" jdbcType="TIMESTAMP" />
+      <arg column="article_update_time" javaType="java.util.Date" jdbcType="TIMESTAMP" />
+      <arg column="article_sub_image" javaType="java.lang.String" jdbcType="LONGVARCHAR" />
+      <arg column="article_detail" javaType="java.lang.String" jdbcType="LONGVARCHAR" />
+    </constructor>
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, user_id, article_title, article_subtitle, article_main_image, article_praise, 
+    article_viewcount, article_create_time, article_update_time
+  </sql>
+  <sql id="Blob_Column_List">
+    article_sub_image, article_detail
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="ResultMapWithBLOBs">
+    select 
+    <include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
+    from article
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from article
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.bluegrass.pojo.ArticleWithBLOBs">
+    insert into article (id, user_id, article_title, 
+      article_subtitle, article_main_image, article_praise, 
+      article_viewcount, article_create_time, 
+      article_update_time, article_sub_image, 
+      article_detail)
+    values (#{id,jdbcType=INTEGER}, #{userId,jdbcType=INTEGER}, #{articleTitle,jdbcType=VARCHAR}, 
+      #{articleSubtitle,jdbcType=VARCHAR}, #{articleMainImage,jdbcType=VARCHAR}, #{articlePraise,jdbcType=INTEGER}, 
+      #{articleViewcount,jdbcType=INTEGER}, #{articleCreateTime,jdbcType=TIMESTAMP}, 
+      #{articleUpdateTime,jdbcType=TIMESTAMP}, #{articleSubImage,jdbcType=LONGVARCHAR}, 
+      #{articleDetail,jdbcType=LONGVARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.bluegrass.pojo.ArticleWithBLOBs">
+    insert into article
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="userId != null">
+        user_id,
+      </if>
+      <if test="articleTitle != null">
+        article_title,
+      </if>
+      <if test="articleSubtitle != null">
+        article_subtitle,
+      </if>
+      <if test="articleMainImage != null">
+        article_main_image,
+      </if>
+      <if test="articlePraise != null">
+        article_praise,
+      </if>
+      <if test="articleViewcount != null">
+        article_viewcount,
+      </if>
+      <if test="articleCreateTime != null">
+        article_create_time,
+      </if>
+      <if test="articleUpdateTime != null">
+        article_update_time,
+      </if>
+      <if test="articleSubImage != null">
+        article_sub_image,
+      </if>
+      <if test="articleDetail != null">
+        article_detail,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="userId != null">
+        #{userId,jdbcType=INTEGER},
+      </if>
+      <if test="articleTitle != null">
+        #{articleTitle,jdbcType=VARCHAR},
+      </if>
+      <if test="articleSubtitle != null">
+        #{articleSubtitle,jdbcType=VARCHAR},
+      </if>
+      <if test="articleMainImage != null">
+        #{articleMainImage,jdbcType=VARCHAR},
+      </if>
+      <if test="articlePraise != null">
+        #{articlePraise,jdbcType=INTEGER},
+      </if>
+      <if test="articleViewcount != null">
+        #{articleViewcount,jdbcType=INTEGER},
+      </if>
+      <if test="articleCreateTime != null">
+        #{articleCreateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="articleUpdateTime != null">
+        #{articleUpdateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="articleSubImage != null">
+        #{articleSubImage,jdbcType=LONGVARCHAR},
+      </if>
+      <if test="articleDetail != null">
+        #{articleDetail,jdbcType=LONGVARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.bluegrass.pojo.ArticleWithBLOBs">
+    update article
+    <set>
+      <if test="userId != null">
+        user_id = #{userId,jdbcType=INTEGER},
+      </if>
+      <if test="articleTitle != null">
+        article_title = #{articleTitle,jdbcType=VARCHAR},
+      </if>
+      <if test="articleSubtitle != null">
+        article_subtitle = #{articleSubtitle,jdbcType=VARCHAR},
+      </if>
+      <if test="articleMainImage != null">
+        article_main_image = #{articleMainImage,jdbcType=VARCHAR},
+      </if>
+      <if test="articlePraise != null">
+        article_praise = #{articlePraise,jdbcType=INTEGER},
+      </if>
+      <if test="articleViewcount != null">
+        article_viewcount = #{articleViewcount,jdbcType=INTEGER},
+      </if>
+      <if test="articleCreateTime != null">
+        article_create_time = #{articleCreateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="articleUpdateTime != null">
+        article_update_time = #{articleUpdateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="articleSubImage != null">
+        article_sub_image = #{articleSubImage,jdbcType=LONGVARCHAR},
+      </if>
+      <if test="articleDetail != null">
+        article_detail = #{articleDetail,jdbcType=LONGVARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKeyWithBLOBs" parameterType="com.bluegrass.pojo.ArticleWithBLOBs">
+    update article
+    set user_id = #{userId,jdbcType=INTEGER},
+      article_title = #{articleTitle,jdbcType=VARCHAR},
+      article_subtitle = #{articleSubtitle,jdbcType=VARCHAR},
+      article_main_image = #{articleMainImage,jdbcType=VARCHAR},
+      article_praise = #{articlePraise,jdbcType=INTEGER},
+      article_viewcount = #{articleViewcount,jdbcType=INTEGER},
+      article_create_time = #{articleCreateTime,jdbcType=TIMESTAMP},
+      article_update_time = #{articleUpdateTime,jdbcType=TIMESTAMP},
+      article_sub_image = #{articleSubImage,jdbcType=LONGVARCHAR},
+      article_detail = #{articleDetail,jdbcType=LONGVARCHAR}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.bluegrass.pojo.Article">
+    update article
+    set user_id = #{userId,jdbcType=INTEGER},
+      article_title = #{articleTitle,jdbcType=VARCHAR},
+      article_subtitle = #{articleSubtitle,jdbcType=VARCHAR},
+      article_main_image = #{articleMainImage,jdbcType=VARCHAR},
+      article_praise = #{articlePraise,jdbcType=INTEGER},
+      article_viewcount = #{articleViewcount,jdbcType=INTEGER},
+      article_create_time = #{articleCreateTime,jdbcType=TIMESTAMP},
+      article_update_time = #{articleUpdateTime,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <resultMap id="BaseResultMap" type="com.bluegrass.pojo.Article">
+    <constructor>
+      <idArg column="id" javaType="java.lang.Integer" jdbcType="INTEGER" />
+      <arg column="user_id" javaType="java.lang.Integer" jdbcType="INTEGER" />
+      <arg column="article_title" javaType="java.lang.String" jdbcType="VARCHAR" />
+      <arg column="article_subtitle" javaType="java.lang.String" jdbcType="VARCHAR" />
+      <arg column="article_main_image" javaType="java.lang.String" jdbcType="VARCHAR" />
+      <arg column="article_praise" javaType="java.lang.Integer" jdbcType="INTEGER" />
+      <arg column="article_viewcount" javaType="java.lang.Integer" jdbcType="INTEGER" />
+      <arg column="article_create_time" javaType="java.util.Date" jdbcType="TIMESTAMP" />
+      <arg column="article_update_time" javaType="java.util.Date" jdbcType="TIMESTAMP" />
+    </constructor>
+  </resultMap>
+  <resultMap id="ResultMapWithBLOBs" type="com.bluegrass.pojo.ArticleWithBLOBs">
+    <constructor>
+      <idArg column="id" javaType="java.lang.Integer" jdbcType="INTEGER" />
+      <arg column="user_id" javaType="java.lang.Integer" jdbcType="INTEGER" />
+      <arg column="article_title" javaType="java.lang.String" jdbcType="VARCHAR" />
+      <arg column="article_subtitle" javaType="java.lang.String" jdbcType="VARCHAR" />
+      <arg column="article_main_image" javaType="java.lang.String" jdbcType="VARCHAR" />
+      <arg column="article_praise" javaType="java.lang.Integer" jdbcType="INTEGER" />
+      <arg column="article_viewcount" javaType="java.lang.Integer" jdbcType="INTEGER" />
+      <arg column="article_create_time" javaType="java.util.Date" jdbcType="TIMESTAMP" />
+      <arg column="article_update_time" javaType="java.util.Date" jdbcType="TIMESTAMP" />
+      <arg column="article_sub_image" javaType="java.lang.String" jdbcType="LONGVARCHAR" />
+      <arg column="article_detail" javaType="java.lang.String" jdbcType="LONGVARCHAR" />
+    </constructor>
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, user_id, article_title, article_subtitle, article_main_image, article_praise, 
+    article_viewcount, article_create_time, article_update_time
+  </sql>
+  <sql id="Blob_Column_List">
+    article_sub_image, article_detail
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="ResultMapWithBLOBs">
+    select 
+    <include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
+    from article
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from article
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.bluegrass.pojo.ArticleWithBLOBs">
+    insert into article (id, user_id, article_title, 
+      article_subtitle, article_main_image, article_praise, 
+      article_viewcount, article_create_time, 
+      article_update_time, article_sub_image, 
+      article_detail)
+    values (#{id,jdbcType=INTEGER}, #{userId,jdbcType=INTEGER}, #{articleTitle,jdbcType=VARCHAR}, 
+      #{articleSubtitle,jdbcType=VARCHAR}, #{articleMainImage,jdbcType=VARCHAR}, #{articlePraise,jdbcType=INTEGER}, 
+      #{articleViewcount,jdbcType=INTEGER}, #{articleCreateTime,jdbcType=TIMESTAMP}, 
+      #{articleUpdateTime,jdbcType=TIMESTAMP}, #{articleSubImage,jdbcType=LONGVARCHAR}, 
+      #{articleDetail,jdbcType=LONGVARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.bluegrass.pojo.ArticleWithBLOBs">
+    insert into article
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="userId != null">
+        user_id,
+      </if>
+      <if test="articleTitle != null">
+        article_title,
+      </if>
+      <if test="articleSubtitle != null">
+        article_subtitle,
+      </if>
+      <if test="articleMainImage != null">
+        article_main_image,
+      </if>
+      <if test="articlePraise != null">
+        article_praise,
+      </if>
+      <if test="articleViewcount != null">
+        article_viewcount,
+      </if>
+      <if test="articleCreateTime != null">
+        article_create_time,
+      </if>
+      <if test="articleUpdateTime != null">
+        article_update_time,
+      </if>
+      <if test="articleSubImage != null">
+        article_sub_image,
+      </if>
+      <if test="articleDetail != null">
+        article_detail,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="userId != null">
+        #{userId,jdbcType=INTEGER},
+      </if>
+      <if test="articleTitle != null">
+        #{articleTitle,jdbcType=VARCHAR},
+      </if>
+      <if test="articleSubtitle != null">
+        #{articleSubtitle,jdbcType=VARCHAR},
+      </if>
+      <if test="articleMainImage != null">
+        #{articleMainImage,jdbcType=VARCHAR},
+      </if>
+      <if test="articlePraise != null">
+        #{articlePraise,jdbcType=INTEGER},
+      </if>
+      <if test="articleViewcount != null">
+        #{articleViewcount,jdbcType=INTEGER},
+      </if>
+      <if test="articleCreateTime != null">
+        #{articleCreateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="articleUpdateTime != null">
+        #{articleUpdateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="articleSubImage != null">
+        #{articleSubImage,jdbcType=LONGVARCHAR},
+      </if>
+      <if test="articleDetail != null">
+        #{articleDetail,jdbcType=LONGVARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.bluegrass.pojo.ArticleWithBLOBs">
+    update article
+    <set>
+      <if test="userId != null">
+        user_id = #{userId,jdbcType=INTEGER},
+      </if>
+      <if test="articleTitle != null">
+        article_title = #{articleTitle,jdbcType=VARCHAR},
+      </if>
+      <if test="articleSubtitle != null">
+        article_subtitle = #{articleSubtitle,jdbcType=VARCHAR},
+      </if>
+      <if test="articleMainImage != null">
+        article_main_image = #{articleMainImage,jdbcType=VARCHAR},
+      </if>
+      <if test="articlePraise != null">
+        article_praise = #{articlePraise,jdbcType=INTEGER},
+      </if>
+      <if test="articleViewcount != null">
+        article_viewcount = #{articleViewcount,jdbcType=INTEGER},
+      </if>
+      <if test="articleCreateTime != null">
+        article_create_time = #{articleCreateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="articleUpdateTime != null">
+        article_update_time = #{articleUpdateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="articleSubImage != null">
+        article_sub_image = #{articleSubImage,jdbcType=LONGVARCHAR},
+      </if>
+      <if test="articleDetail != null">
+        article_detail = #{articleDetail,jdbcType=LONGVARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKeyWithBLOBs" parameterType="com.bluegrass.pojo.ArticleWithBLOBs">
+    update article
+    set user_id = #{userId,jdbcType=INTEGER},
+      article_title = #{articleTitle,jdbcType=VARCHAR},
+      article_subtitle = #{articleSubtitle,jdbcType=VARCHAR},
+      article_main_image = #{articleMainImage,jdbcType=VARCHAR},
+      article_praise = #{articlePraise,jdbcType=INTEGER},
+      article_viewcount = #{articleViewcount,jdbcType=INTEGER},
+      article_create_time = #{articleCreateTime,jdbcType=TIMESTAMP},
+      article_update_time = #{articleUpdateTime,jdbcType=TIMESTAMP},
+      article_sub_image = #{articleSubImage,jdbcType=LONGVARCHAR},
+      article_detail = #{articleDetail,jdbcType=LONGVARCHAR}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.bluegrass.pojo.Article">
+    update article
+    set user_id = #{userId,jdbcType=INTEGER},
+      article_title = #{articleTitle,jdbcType=VARCHAR},
+      article_subtitle = #{articleSubtitle,jdbcType=VARCHAR},
+      article_main_image = #{articleMainImage,jdbcType=VARCHAR},
+      article_praise = #{articlePraise,jdbcType=INTEGER},
+      article_viewcount = #{articleViewcount,jdbcType=INTEGER},
+      article_create_time = #{articleCreateTime,jdbcType=TIMESTAMP},
+      article_update_time = #{articleUpdateTime,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <resultMap id="BaseResultMap" type="com.bluegrass.pojo.Article">
+    <constructor>
+      <idArg column="id" javaType="java.lang.Integer" jdbcType="INTEGER" />
+      <arg column="user_id" javaType="java.lang.Integer" jdbcType="INTEGER" />
+      <arg column="article_title" javaType="java.lang.String" jdbcType="VARCHAR" />
+      <arg column="article_viewcount" javaType="java.lang.Integer" jdbcType="INTEGER" />
+      <arg column="subtitle" javaType="java.lang.String" jdbcType="VARCHAR" />
+      <arg column="main_image" javaType="java.lang.String" jdbcType="VARCHAR" />
+      <arg column="sub_images" javaType="java.lang.String" jdbcType="VARCHAR" />
+      <arg column="detail" javaType="java.lang.String" jdbcType="VARCHAR" />
+      <arg column="create_time" javaType="java.util.Date" jdbcType="TIMESTAMP" />
+      <arg column="update_time" javaType="java.util.Date" jdbcType="TIMESTAMP" />
+    </constructor>
+  </resultMap>
+  <sql id="Base_Column_List">
     id, user_id, article_title, article_viewcount, subtitle, main_image, sub_images, 
     detail, create_time, update_time
   </sql>
-  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
     select 
     <include refid="Base_Column_List" />
     from article
     where id = #{id,jdbcType=INTEGER}
   </select>
-  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
     delete from article
     where id = #{id,jdbcType=INTEGER}
   </delete>
-  <insert id="insert" parameterType="com.bluegrass.pojo.Article" >
+  <insert id="insert" parameterType="com.bluegrass.pojo.Article">
     insert into article (id, user_id, article_title, 
       article_viewcount, subtitle, main_image, 
       sub_images, detail, create_time, 
@@ -39,107 +427,107 @@
       #{subImages,jdbcType=VARCHAR}, #{detail,jdbcType=VARCHAR}, now(),
       now())
   </insert>
-  <insert id="insertSelective" parameterType="com.bluegrass.pojo.Article" >
+  <insert id="insertSelective" parameterType="com.bluegrass.pojo.Article">
     insert into article
-    <trim prefix="(" suffix=")" suffixOverrides="," >
-      <if test="id != null" >
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
         id,
       </if>
-      <if test="userId != null" >
+      <if test="userId != null">
         user_id,
       </if>
-      <if test="articleTitle != null" >
+      <if test="articleTitle != null">
         article_title,
       </if>
-      <if test="articleViewcount != null" >
+      <if test="articleViewcount != null">
         article_viewcount,
       </if>
-      <if test="subtitle != null" >
+      <if test="subtitle != null">
         subtitle,
       </if>
-      <if test="mainImage != null" >
+      <if test="mainImage != null">
         main_image,
       </if>
-      <if test="subImages != null" >
+      <if test="subImages != null">
         sub_images,
       </if>
-      <if test="detail != null" >
+      <if test="detail != null">
         detail,
       </if>
-      <if test="createTime != null" >
+      <if test="createTime != null">
         create_time,
       </if>
-      <if test="updateTime != null" >
+      <if test="updateTime != null">
         update_time,
       </if>
     </trim>
-    <trim prefix="values (" suffix=")" suffixOverrides="," >
-      <if test="id != null" >
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
         #{id,jdbcType=INTEGER},
       </if>
-      <if test="userId != null" >
+      <if test="userId != null">
         #{userId,jdbcType=INTEGER},
       </if>
-      <if test="articleTitle != null" >
+      <if test="articleTitle != null">
         #{articleTitle,jdbcType=VARCHAR},
       </if>
-      <if test="articleViewcount != null" >
+      <if test="articleViewcount != null">
         #{articleViewcount,jdbcType=INTEGER},
       </if>
-      <if test="subtitle != null" >
+      <if test="subtitle != null">
         #{subtitle,jdbcType=VARCHAR},
       </if>
-      <if test="mainImage != null" >
+      <if test="mainImage != null">
         #{mainImage,jdbcType=VARCHAR},
       </if>
-      <if test="subImages != null" >
+      <if test="subImages != null">
         #{subImages,jdbcType=VARCHAR},
       </if>
-      <if test="detail != null" >
+      <if test="detail != null">
         #{detail,jdbcType=VARCHAR},
       </if>
-      <if test="createTime != null" >
+      <if test="createTime != null">
         now(),
       </if>
-      <if test="updateTime != null" >
+      <if test="updateTime != null">
         now(),
       </if>
     </trim>
   </insert>
-  <update id="updateByPrimaryKeySelective" parameterType="com.bluegrass.pojo.Article" >
+  <update id="updateByPrimaryKeySelective" parameterType="com.bluegrass.pojo.Article">
     update article
-    <set >
-      <if test="userId != null" >
+    <set>
+      <if test="userId != null">
         user_id = #{userId,jdbcType=INTEGER},
       </if>
-      <if test="articleTitle != null" >
+      <if test="articleTitle != null">
         article_title = #{articleTitle,jdbcType=VARCHAR},
       </if>
-      <if test="articleViewcount != null" >
+      <if test="articleViewcount != null">
         article_viewcount = #{articleViewcount,jdbcType=INTEGER},
       </if>
-      <if test="subtitle != null" >
+      <if test="subtitle != null">
         subtitle = #{subtitle,jdbcType=VARCHAR},
       </if>
-      <if test="mainImage != null" >
+      <if test="mainImage != null">
         main_image = #{mainImage,jdbcType=VARCHAR},
       </if>
-      <if test="subImages != null" >
+      <if test="subImages != null">
         sub_images = #{subImages,jdbcType=VARCHAR},
       </if>
-      <if test="detail != null" >
+      <if test="detail != null">
         detail = #{detail,jdbcType=VARCHAR},
       </if>
-      <if test="createTime != null" >
+      <if test="createTime != null">
         create_time = #{createTime,jdbcType=TIMESTAMP},
       </if>
-      <if test="updateTime != null" >
+      <if test="updateTime != null">
         update_time = now(),
       </if>
     </set>
     where id = #{id,jdbcType=INTEGER}
   </update>
-  <update id="updateByPrimaryKey" parameterType="com.bluegrass.pojo.Article" >
+  <update id="updateByPrimaryKey" parameterType="com.bluegrass.pojo.Article">
     update article
     set user_id = #{userId,jdbcType=INTEGER},
       article_title = #{articleTitle,jdbcType=VARCHAR},
@@ -153,16 +541,16 @@
     where id = #{id,jdbcType=INTEGER}
   </update>
 
-  <select id="searchByUserId" resultMap="BaseResultMap" parameterType="map">
+  <select id="searchByUserId" parameterType="map" resultMap="BaseResultMap">
 
-    select <include refid="Base_Column_List"/>
+    select <include refid="Base_Column_List" />
     from article
     where user_id = #{userId}
   </select>
 
   <select id="searchByArticleTitle" parameterType="string" resultMap="BaseResultMap">
     select
-    <include refid="Base_Column_List"/>
+    <include refid="Base_Column_List" />
     from article
     where article_title like #{articleTitle}
   </select>
